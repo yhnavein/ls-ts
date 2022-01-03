@@ -4,7 +4,8 @@
   "description": "TypeScript wrappers for localStorage and sessionStorage",
   "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "test": "mocha 'src/**/*.spec.ts'"
   },
   "files": [
     "dist"
@@ -23,6 +24,7 @@
     "@types/mocha": "9.0.0",
     "chai": "4.3.4",
     "mocha": "9.1.3",
+    "mock-local-storage": "1.1.19",
     "sucrase": "3.20.3",
     "typescript": "4.5.4"
   }

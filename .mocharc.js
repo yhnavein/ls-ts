@@ -1,3 +1,3 @@
 module.exports = {
-  require: 'sucrase/register',
+  require: ['sucrase/register', 'mock-local-storage'],
 };
