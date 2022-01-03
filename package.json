@@ -1,10 +1,11 @@
 {
   "name": "ls-ts",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "TypeScript wrappers for localStorage and sessionStorage",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "rm -rf dist/ && tsc",
     "test": "mocha 'src/**/*.spec.ts'"
   },
   "files": [
