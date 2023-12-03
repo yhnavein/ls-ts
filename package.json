@@ -1,6 +1,6 @@
 {
   "name": "ls-ts",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "description": "TypeScript wrappers for localStorage and sessionStorage",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

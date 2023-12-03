@@ -34,11 +34,9 @@ export const LS = {
    *
    * @param {string} key
    * @param {any} value
-   * @param {string} ttl (s) define how long this value can be used. Does not work with `string` type
    */
   write(key: string, value: any) {
-    let val = value;
-    const text = isString(value) ? value : JSON.stringify(val);
+    const text = isString(value) ? value : JSON.stringify(value);
     try {
       localStorage.setItem(key, text);
     } catch (err) {
@@ -46,6 +44,29 @@ export const LS = {
         localStorage.clear();
       }
     }
+  },
+
+  /**
+   * Updates a complex value (using shallow merge) in the local storage.
+   * If there is no existing value, it will just create a new one.
+   * Only object types are supported
+   *
+   * @param {string} key
+   * @param {object} value
+   */
+  update<T = object>(key: string, value: Partial<T>) {
+    if (!value || typeof value !== 'object') {
+      throw new Error('Not supported value type. Only objects are supported.');
+    }
+
+    const oldVal = this.read(key);
+
+    if (oldVal && typeof oldVal !== 'object') {
+      throw new Error("We can't merge a primitive type with an object. Clear previous value first");
+    }
+    const newVal = oldVal ?? {};
+    Object.assign(newVal, value);
+    this.write(key, newVal);
   },
 
   /**

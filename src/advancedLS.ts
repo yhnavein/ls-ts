@@ -12,7 +12,7 @@ export const AdvancedLS = {
    * @param {any} defaultValue Value to be returned when localStorage does not contain requested key
    * @returns {T}
    */
-  read<T>(key: string, opts: ReadOptions, defaultValue: any = undefined): T {
+  read<T>(key: string, opts?: ReadOptions, defaultValue: any = undefined): T {
     const value = localStorage.getItem(key);
 
     if (!value) {
@@ -28,7 +28,7 @@ export const AdvancedLS = {
           return defaultValue;
         }
 
-        if ((item.token || opts.cacheToken) && item.token !== opts?.cacheToken) {
+        if ((item.token || opts?.cacheToken) && item.token !== opts?.cacheToken) {
           localStorage.removeItem(key);
           return defaultValue;
         }
@@ -69,6 +69,30 @@ export const AdvancedLS = {
   },
 
   /**
+   * Updates a complex value (using shallow merge) in the local storage.
+   * If there is no existing value (or it expired), it will just create a new one.
+   * Only object types are supported
+   *
+   * @param {string} key
+   * @param {object} value
+   * @param opts Options defining how long this data can live
+   */
+  update<T = object>(key: string, value: Partial<T>, opts?: WriteOptions) {
+    if (!value || typeof value !== 'object') {
+      throw new Error('Not supported value type. Only objects are supported.');
+    }
+
+    const oldVal = this.read(key, opts);
+
+    if (oldVal && typeof oldVal !== 'object') {
+      throw new Error("We can't merge a primitive type with an object. Clear previous value first");
+    }
+    const newVal = oldVal ?? {};
+    Object.assign(newVal, value);
+    this.write(key, newVal, opts);
+  },
+
+  /**
    * Remove selected item from the local storage
    *
    * @param {string} key
@@ -83,7 +107,7 @@ interface WriteOptions {
   ttl?: number;
 
   /**
-   * Optional token saved alongside your value. If you decided to use token when saving it is expected
+   * Optional token saved alongside your value. If you decide to use token when saving it is expected
    * that once reading value, if a given token at that time is different, then item will be invalidated
    **/
   cacheToken?: string | number;
@@ -91,7 +115,7 @@ interface WriteOptions {
 
 interface ReadOptions {
   /**
-   * Optional token saved alongside your value. If you decided to use token when saving
+   * Optional token saved alongside your value. If you decide to use token when saving
    * and once reading value, different value of the token is provided then LS entry will be invalidated
    **/
   cacheToken?: string | number;
