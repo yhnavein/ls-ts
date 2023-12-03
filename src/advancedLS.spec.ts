@@ -212,4 +212,78 @@ describe('AdvancedLS', () => {
       expect(val).to.be.null;
     });
   });
+
+  describe('update', () => {
+    describe('Simple cases', () => {
+      const key = 'TEST10';
+
+      it('should update existing object', () => {
+        AdvancedLS.write(key, { a: 123, b: 234 });
+        AdvancedLS.update(key, { c: 345 });
+
+        const val = AdvancedLS.read<object>(key);
+        expect(val).to.deep.equal({ a: 123, b: 234, c: 345 });
+      });
+
+      it('should create a value if it does not exist', () => {
+        AdvancedLS.update(key, { a: 'test' });
+
+        const val = AdvancedLS.read<object>(key);
+        expect(val).deep.equal({ a: 'test' });
+      });
+
+      [123, 'test', true].forEach((val) => {
+        it(`should cancel update if previous value was a primitive: ${val}`, () => {
+          AdvancedLS.write(key, val);
+
+          expect(() => {
+            AdvancedLS.update(key, { a: 999 });
+          }).to.throw();
+
+          const value = AdvancedLS.read(key);
+          expect(value).to.eq(val);
+        });
+      });
+    });
+
+    describe('Token invalidations', () => {
+      const key = 'TEST11';
+
+      it('should create value if new cacheToken is used', () => {
+        AdvancedLS.write(key, { a: 123 }, { cacheToken: '123456' });
+        AdvancedLS.update(key, { b: 'test' }, { cacheToken: '456789' });
+
+        const val = AdvancedLS.read<object>(key, { cacheToken: '456789' });
+        expect(val).deep.equal({ b: 'test' });
+      });
+
+      it('should update value if it cacheToken matches', () => {
+        AdvancedLS.write(key, { a: 123 }, { cacheToken: '123456' });
+        AdvancedLS.update(key, { b: 'test' }, { cacheToken: '123456' });
+
+        const val = AdvancedLS.read<object>(key, { cacheToken: '123456' });
+        expect(val).deep.equal({ a: 123, b: 'test' });
+      });
+    });
+
+    describe('Ttl invalidations', () => {
+      const key = 'TEST12';
+
+      it('should create value if it expired', () => {
+        AdvancedLS.write(key, { a: 123 }, { ttl: -3600 });
+        AdvancedLS.update(key, { a: 'test' });
+
+        const val = AdvancedLS.read<object>(key);
+        expect(val).deep.equal({ a: 'test' });
+      });
+
+      it('should update value if it is still valid', () => {
+        AdvancedLS.write(key, { a: 123 }, { ttl: 3600 });
+        AdvancedLS.update(key, { b: 'test' }, { ttl: 3600 });
+
+        const val = AdvancedLS.read<object>(key);
+        expect(val).deep.equal({ a: 123, b: 'test' });
+      });
+    });
+  });
 });

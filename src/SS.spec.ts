@@ -59,4 +59,35 @@ describe('SS - SessionStorage', () => {
       expect(val.missing).to.eq(true);
     });
   });
+
+  describe('update', () => {
+    const key = 'TEST0';
+    it('should update existing object', () => {
+      SS.write(key, { a: 123, b: 234 });
+      SS.update(key, { c: 345 });
+
+      const val = SS.read<object>(key);
+      expect(val).to.deep.equal({ a: 123, b: 234, c: 345 });
+    });
+
+    it('should create a value if it does not exist', () => {
+      SS.update(key, { a: 'test' });
+
+      const val = SS.read<object>(key);
+      expect(val).deep.equal({ a: 'test' });
+    });
+
+    [123, 'test', true].forEach((val) => {
+      it(`should cancel update if previous value was a primitive: ${val}`, () => {
+        SS.write(key, val);
+
+        expect(() => {
+          SS.update(key, { a: 999 });
+        }).to.throw();
+
+        const value = SS.read(key);
+        expect(value).to.eq(val);
+      });
+    });
+  });
 });

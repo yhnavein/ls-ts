@@ -1,9 +1,9 @@
-# ls-ts
+# `ls-ts`
 
 > TypeScript wrappers for working with localStorage and sessionStorage with types in mind
 
 Apart from wrapper functionality, there are two notable features, that allows persist data only for a given time period (`ttl`) and to bind data to a specific application version.
-Examples in the examples below.
+Usage examples below:
 
 ## Installation
 
@@ -57,6 +57,8 @@ interface MyType {
 
 ### Advanced
 
+It's a more extended version of `LS`, with support for expiring data items based tokens or time to live.
+
 ```ts
 import { AdvancedLS } from 'ls-ts';
 
@@ -79,4 +81,39 @@ interface MyType {
   key: string;
   answerToUltimateQuestion: number;
 }
+```
+
+## Update complex data
+
+Sometimes it may be useful to be able to update only a part of the data, without overwriting the whole object.
+For this purpose, there is a `update` method. It's available for all three wrappers.
+
+Sample usage:
+
+```ts
+import { LS } from 'ls-ts';
+
+interface AppState {
+  chosenProductId: number;
+  userId: number;
+  theme: 'dark' | 'light';
+}
+const obj: AppState = {
+  chosenProductId: 123,
+  userId: 12,
+  theme: 'dark'
+};
+
+LS.write('appState', obj);
+
+// later on User wants to change the theme and leave the rest of the data intact
+LS.update<AppState>('appState', { theme: 'light' });
+
+const savedData = LS.read<AppState>('appState');
+/** {
+ *   chosenProductId: 123,
+ *   userId: 12,
+ *   theme: 'light'
+ * }
+ */
 ```

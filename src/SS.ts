@@ -44,6 +44,29 @@ export const SS = {
   },
 
   /**
+   * Updates a complex value (using shallow merge) in the session storage.
+   * If there is no existing value, it will just create a new one.
+   * Only object types are supported
+   *
+   * @param {string} key
+   * @param {object} value
+   */
+  update<T = object>(key: string, value: Partial<T>) {
+    if (!value || typeof value !== 'object') {
+      throw new Error('Not supported value type. Only objects are supported.');
+    }
+
+    const oldVal = this.read(key);
+
+    if (oldVal && typeof oldVal !== 'object') {
+      throw new Error("We can't merge a primitive type with an object. Clear previous value first");
+    }
+    const newVal = oldVal ?? {};
+    Object.assign(newVal, value);
+    this.write(key, newVal);
+  },
+
+  /**
    * Remove selected item from the session storage
    *
    * @param {string} key
