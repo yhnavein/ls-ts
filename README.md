@@ -1,5 +1,11 @@
 # `ls-ts`
 
+![npm latest version](https://img.shields.io/npm/v/ls-ts)
+![NodeCI](https://github.com/yhnavein/ls-ts/workflows/NodeCI/badge.svg)
+![npm downloads](https://img.shields.io/npm/dw/ls-ts.svg)
+![npm bundle size](https://flat-badgen.vercel.app/bundlephobia/minzip/ls-ts)
+![npm install size](https://packagephobia.now.sh/badge?p=ls-ts)
+
 > TypeScript wrappers for working with localStorage and sessionStorage with types in mind
 
 Apart from wrapper functionality, there are two notable features, that allows persist data only for a given time period (`ttl`) and to bind data to a specific application version.
@@ -17,7 +23,7 @@ npm install --save ls-ts
 
 There are few use cases (exports) for this library:
 
-- `Storage` - Have a nicely typed way of working with a particular **object** in localStorage/sessionStorage.
+- `Storage` - Nicely typed way of working with a particular **object** in localStorage or sessionStorage.
 - `LS`, `SS` - Barebones wrapper around localStorage (and sessionStorage respectively) with types.
 - `AdvancedLS` - Extended version of `LS` with support for expiring data items based on tokens or time to live.
 
