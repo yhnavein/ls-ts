@@ -10,9 +10,9 @@ export const SS = {
    * @template T
    * @param {string} key
    * @param {any} defaultValue Value to be returned when sessionStorage does not contain requested key
-   * @returns {T}
+   * @returns {T} item or undefined
    */
-  read<T>(key: string, defaultValue: any = undefined): T {
+  read<T>(key: string, defaultValue: any = undefined): T | undefined {
     const value = sessionStorage.getItem(key);
 
     if (!value) {
@@ -22,7 +22,8 @@ export const SS = {
     try {
       return JSON.parse(value) as T;
     } catch (error) {
-      return value || defaultValue;
+      // This handles the case when we have a string value in local storage
+      return value ?? defaultValue;
     }
   },
 

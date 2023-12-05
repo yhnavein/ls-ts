@@ -28,8 +28,8 @@ export class Storage<T = object> {
   /**
    * Reads whole object from the storage
    */
-  read() {
-    return this.driver.read<T>(this.key);
+  read(defaultValue: any = undefined): T | undefined {
+    return this.driver.read<T>(this.key, defaultValue);
   }
 
   /**

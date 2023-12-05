@@ -10,9 +10,9 @@ export const AdvancedLS = {
    * @param {string} key
    * @param opts
    * @param {any} defaultValue Value to be returned when localStorage does not contain requested key
-   * @returns {T}
+   * @returns {T} item or undefined
    */
-  read<T>(key: string, opts?: ReadOptions, defaultValue: any = undefined): T {
+  read<T>(key: string, opts?: ReadOptions, defaultValue: any = undefined): T | undefined {
     const value = localStorage.getItem(key);
 
     if (!value) {
@@ -37,7 +37,8 @@ export const AdvancedLS = {
       }
       return defaultValue;
     } catch (error) {
-      return value || defaultValue;
+      // This handles the case when we have a string value in local storage
+      return value ?? defaultValue;
     }
   },
 
