@@ -15,6 +15,26 @@ npm install --save ls-ts
 
 ## Usage
 
+There are few use cases (exports) for this library:
+
+- `Storage` - Have a nicely typed way of working with a particular **object** in localStorage/sessionStorage.
+- `LS`, `SS` - Barebones wrapper around localStorage (and sessionStorage respectively) with types.
+- `AdvancedLS` - Extended version of `LS` with support for expiring data items based on tokens or time to live.
+
+### Storage
+
+```ts
+const storage = new Storage<MyType>('someKey', LS);
+storage.write({ key: 'value', answerToUltimateQuestion: 21 });
+storage.update({ answerToUltimateQuestion: 42 });
+const savedData = storage.read();
+
+interface MyType {
+  key: string;
+  answerToUltimateQuestion: number;
+}
+```
+
 ### LocalStorage
 
 ```ts
@@ -86,7 +106,7 @@ interface MyType {
 ## Update complex data
 
 Sometimes it may be useful to be able to update only a part of the data, without overwriting the whole object.
-For this purpose, there is a `update` method. It's available for all three wrappers.
+For this purpose, there is a `update` method. It's available for all three wrappers and `Storage` utility.
 
 Sample usage:
 
